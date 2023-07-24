@@ -1,15 +1,19 @@
 'use client'
-import Currency from '@/components/ui/currency'
-import IconButton from '@/components/ui/icon-button'
-import usePreviewModal from '@/hooks/use-preview-modal'
-import { Product } from '@/types'
+
 import { ExpandIcon, ShoppingCartIcon } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
+import Currency from '@/components/ui/currency'
+import IconButton from '@/components/ui/icon-button'
+import useCart from '@/hooks/use-cart'
+import usePreviewModal from '@/hooks/use-preview-modal'
+import { Product } from '@/types'
+
 export default function ProductCard({ data }: { data: Product }) {
-  const router = useRouter()
   const previewModal = usePreviewModal()
+  const router = useRouter()
+  const cart = useCart()
 
   const handleClick = () => {
     router.push(`/product/${data?.id}`)
@@ -18,6 +22,11 @@ export default function ProductCard({ data }: { data: Product }) {
   const onPreview: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation()
     previewModal.onOpen(data)
+  }
+
+  const onAddToCart: React.MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.stopPropagation()
+    cart.addItem(data)
   }
 
   return (
@@ -40,8 +49,9 @@ export default function ProductCard({ data }: { data: Product }) {
               onClick={onPreview}
               icon={<ExpandIcon size={20} className="text-gray-600" />}
             />
+
             <IconButton
-              onClick={() => {}}
+              onClick={onAddToCart}
               icon={<ShoppingCartIcon size={20} className="text-gray-600" />}
             />
           </div>
